@@ -31,20 +31,25 @@ using namespace std;
  */
 int main(int argc, char** argv)
 {
-	//exmaple of storing some data in an image
-	//unsigned char* pixel = new unsigned char[64];
-   // unsigned char* data = new unsigned char[8];
-   // Buffer::fillBuffer(pixel, 254, 64);
-   // Buffer::fillBuffer(data, 255, 8);
-   // BlockOperator::storeDataInPixels(pixel, data, 8);
-   // cout<<(int)pixel[0];// this prints 255
+	
+
     
-    
+unsigned char* pixel = new unsigned char[64];//this is for the image data
+unsigned char* data    = new unsigned char[8];// data to hide in image
+Buffer::fillBuffer(pixel, 254, 64); //this is filled(normally filled from image file)
+Buffer::fillBuffer(data, 12, 8);//data to hide in image, in this case 8 bytes of value 12
+BlockOperator::storeDataInPixels(pixel, data, 8);// the data is inserted
+cout<<(int)pixel[0]<<endl;// 254 remains the same, for other numbers there wil only ever be a +1 or -1 change
+unsigned char* data2 = new unsigned char[8];//the data will be read back here
+Buffer::fillBuffer(data2, 0, 8);//makes sure all values are null
+BlockOperator::getDataInPixels(pixel,data2,8);//retrieves data
+cout<<(int)data2[0];// the output is 12 for every byte in data2
+delete[] data,data2,pixel;
+
+
     
     
   
-    //delete[] pixel, data;
-    
     
     
 
