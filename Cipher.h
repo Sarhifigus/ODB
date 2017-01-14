@@ -22,6 +22,15 @@
 
 namespace R1
 {
+
+    void xorBlocks(unsigned char* b1, unsigned char* b2, int blocklength)// b2 is bascially iv
+    {
+        for(int n = 0; n<blocklength; n++)
+            {
+        b1[n] = b1[n]^b2[n];
+            }
+
+    }
     
     void R1(unsigned char* data,unsigned char * key)//data is 8 bytes long, key is 8 bytes long
     {
