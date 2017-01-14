@@ -14,15 +14,19 @@
 #ifndef BLOCKOPERATIONS_H
 #define BLOCKOPERATIONS_H
 #include <iostream>
-
+/* this is for storing data within an image, for every 24bit pixel 3 bits of actual data is stored
+ very little of image is changed, as only least significant bit of each byte is changed to a bity of the data
+ for exmaple this could be used to put a story in an image*/
 namespace BlockOperator
 {
     //p is 8 bytes, bytes is 1 byte
+    //p is image data, bytes is the data to insert into image data
      void storeByteInPixel(unsigned char* p, unsigned char bytes)//this only works for 24 bit bitamps, only operates on LSB
     {
         for(int n = 0; n<8; n++)
         {
-  
+          //p[n] iterates through each byte, out of 8
+          //bytes>>n gets each bit of bytes, starting wiht lowest, this is done but shifting n places so sesired bit is the lowest and then Anded with 1, to give the bits value
             
             p[n] &= ~(1);// unsets the last bit(0)
             /////////this gets the bit
@@ -34,8 +38,8 @@ namespace BlockOperator
         
         
     }
-    //24 bytes in 3 bytes out
-    unsigned char retrieveByteInPixel(unsigned char* p, unsigned char bytes)// p is 24 bytes not null, byte is 3 bytes long and null
+    //8 bytes in , 1 byte out
+    unsigned char retrieveByteInPixel(unsigned char* p, unsigned char bytes)// p is 8 bytes not null, byte is 1 bytes long and null
     {
         for(int n = 0; n<8; n++)
         {
@@ -54,14 +58,16 @@ namespace BlockOperator
 
 
     //8 bytes store 1 byte
-    //p must be of length bytes * 8
+    //pixels must be of length bytes * 8
+	//pixels is image data, bytes are data to be hidden
+    //this uses functions above(storeByteInPixel) to insert many bytes of data into image
     void storeDataInPixels(unsigned char* pixels, unsigned char* bytes, int length)//length is of data to store(bytes))
     {
         int blocksize = 8;
         for(int n = 0; n<length; n++)
         {
        
-        unsigned char* block = new unsigned char[blocksize];
+        unsigned char* block = new unsigned char[blocksize];// goes throuhg image data 8 bytes at a time and inserts 1 byte of data(bytes)
         Buffer::getData(block,pixels,(n*blocksize), blocksize);
         
         storeByteInPixel(block,bytes[n]);
@@ -76,6 +82,7 @@ namespace BlockOperator
         
         
     }
+    //reverse of above function
     void getDataInPixels(unsigned char* pixels, unsigned char* bytes, int length)//length is of data to store(bytes))
     {
         int blocksize = 8;
@@ -109,6 +116,18 @@ namespace BlockOperator
     
     
 }
+
+
+   
+    
+    
+    
+    
+    
+    
+    
+   
+
 
 
 #endif /* BLOCKOPERATIONS_H */

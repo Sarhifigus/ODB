@@ -20,112 +20,135 @@
 #include <inttypes.h>
 #include <fstream>
 
-//why don't any of these functions have names? what the hell do they do? what's the different between them? where are the comments?
+/*
+ this is for performing mathmatical and logical operations on blocks, like shifts or xors, eventually will be used to encrypt or hash blocks,whihc can then be sotred in images or written to file
+ comments explain functions below
 
-namespace R1
+ 
+ 
+ 
+ 
+ 
+ */
+namespace Cipher
 {
-	void R1(unsigned char* data, unsigned char* key)//data is 8 bytes long, key is 8 bytes long
-	{
-		int N = 0; //What are these varibles
-		int B = 0;
-		//loop will be 64 long think about it, bit by bit
-		for(int A = 0, N = 0; A<64; A++, N++) //What are these varibles
-		{
-			// std::cout<<N<<" "<<B<<std::endl;
-			data[N] ^= (-(((data[B] >> N) & 1)^((key[B] >> N) & 1)) ^ data[B]) & (1 << N); //Explain what this does?
-			if(N==7)
-			{
-				N = -1;
-				B++;
-			}
-		}
-	}
+    //this simply xors one block with another, both must be same size
+      void XorBlocks(unsigned char* data,unsigned char * key, int blocksize)
+    {
+        for(int n = 0; n<blocksize; n++)
+        data[n] ^=key[n];
+        
+    }
 
-	void xorBlocks(unsigned char* b1, unsigned char* b2, int blocklength)// b2 is bascially iv
-	{
-		for(int n = 0; n<blocklength; n++)
-		{
-			b1[n] = b1[n]^b2[n];
-		}
-	}
+    /*this function xors one block with another, the first bit of each byte is xor with the corresponding bit of the first byte in other  block, this is a different way of xoring two blocks
+     for example, for visualisation, these are the bytes in buffer1:
+     Col  :   12345678
+     Byte 1:  10101010
+     Byte 2:  10101010
+     Byte 3:  10101010
+     Byte 4:  10101010
+     Byte 5:  10101010
+     Byte 6:  10101010
+     Byte 7:  10101010
+     Byte 8:  10101010
+     column one xored with the first byte of buffer2 e.g 11111111^ buffer2[0]
+	 
+    column two xored with the second byte of buffer2
+    and so on
+     
+     
+     
+     */
+  
+    void MatrixXor(unsigned char* data,unsigned char * key)//data is 8 bytes long, key is 8 bytes long
+    {
+        int N = 0;
+        int B = 0;
+     
+        for(int A= 0, N = 0; A<64; A++, N++)
+        {
+            //N is 0-7, shifts the bit to get correct bit, also iterates through bytes
+            //B is 0-7, is the index of key that is being used for xor
+		
+            
 
-	void R1(unsigned char* data,unsigned char * key)//data is 8 bytes long, key is 8 bytes long
-	{
-		int N = 0;
-		int B = 0;
-		//loop will be 64 long think about it, bit by bit
-		for(int A= 0, N = 0; A<64; A++, N++)
-		{
-			// std::cout<<N<<" "<<B<<std::endl;
-			data[N] ^= (-(((data[B] >> N) & 1)^((key[B] >> N) & 1)) ^ data[B]) & (1 << N);
+            data[N] ^= (-(((data[B] >> N) & 1)^((key[B] >> N) & 1)) ^ data[B]) & (1 << N);
+   
+            if(N==7)
+            {
+                N = -1;
+                B++;
+            }
+        
+        }
+     
+    
+    
+    }
+    //same as above but only one of the columns(B) is xored with key(single byte)
+    void OneByteMatrixXor(unsigned char* data,unsigned char  key, int B)
+    {
+      
+   
 
-			if(N==7)
-			{
-				N = -1;
-				B++;
-			}
-		}
-	}
+        for(int N = 0; N<8; N++)
+        {
+            
+           // std::cout<<N<<" "<<B<<std::endl;
+            data[N] ^= (-(((data[N] >> B) & 1)^((key >> B) & 1)) ^ data[N]) & (1 << B);
+        
+   
+          
+        
+        }
+     
+    
+    
+    }
+    void R3(unsigned char* data, unsigned char n, bool mode)// data is 8 bytes long, therefore n must be 1 byte, n must be below 65, 
+    {
+        //this is for a bitewise rotate carry shift, the data is copyed into a 64 bit buffer, shifted and then copyed back to original buffer
+        
+        uint64_t A;// only available on 64bit machines
+        memcpy(&A, data, 8);
+     
+        
+      
+        if(mode)
+        {
+        A = A  << n | A>> (64 - n);// forward shift
+       
+        }
+        else
+        {
+        A = A >> n | A<<(64-n);// reverse shift
+        }
+        std::memmove(data, &A, 8);
+      
+      
 
-	void AR1(unsigned char* data,unsigned char  key, int B)//data is 8 bytes long, b is 0 to 7 num,
-	{
-		//loop will be 64 long think about it, bit by bit
-		for(int N = 0; N<8; N++)
-		{
-			// std::cout<<N<<" "<<B<<std::endl;
-			data[N] ^= (-(((data[N] >> B) & 1)^((key >> B) & 1)) ^ data[N]) & (1 << B);// B and N mixed to shite
-		}
-	}
-
-	void R3(unsigned char* data, unsigned char n, bool mode)// data is 8 bytes long, therefore n must be 1 byte
-	{
-		uint64_t A;
-		memcpy(&A, data, 8);
-
-		if(mode)
-		{
-			A = A  << n | A>> (64 - n);
-		}
-		else
-		{
-			A = A >> n | A<<(64-n);
-		}
-
-		std::memmove(data, &A, 8);
-	}
-
-	void AR1(unsigned char* data, unsigned char key, int B)//data is 8 bytes long, b is 0 to 7 num
-	{
-		//loop will be 64 long think about it, bit by bit
-		for(int N = 0; N<8; N++) // what is n?
-		{
-			// std::cout<<N<<" "<<B<<std::endl;
-			data[N] ^= (-(((data[N] >> B) & 1)^((key >> B) & 1)) ^ data[N]) & (1 << B);// B and N mixed to shite. what the hell does this do?
-		}
-	}
-
-	void R3(unsigned char* data, unsigned char n, bool mode)// data is 8 bytes long, therefore n must be 1 byte
-	{
-		uint64_t A;
-		memcpy(&A, data, 8);
-
-		if(mode)
-		{
-			A = A  << n | A>> (64 - n);
-		}
-		else
-		{
-			A = A >> n | A<<(64-n);
-		}
-		std::memmove(data, &A, 8);
-	}
-
-	void R3(unsigned char* data) //what does this do?
-	{
-		unsigned char* dat[8];
-		dat[0] = dat[0] & (data[0]>>7)
-		(data[0] >>7)&1
-	}
+        
+     
+       
+       
+       
+        
+        
+        
+        
+        
+        
+    }
+  
+    
+    
+    
+    
+    
+    
 };
+
+
+
 
 #endif /* CIPHER_H */

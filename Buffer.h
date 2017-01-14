@@ -29,7 +29,7 @@ namespace Buffer
 	{
 		memset(des + index, input, amount);
 	}
-	void fillBuffer(unsigned char *des, unsigned char input, int amount)
+	void fillBuffer(unsigned char *des, unsigned char input, int amount)//used to fill buffer, should be done to set all byte sin buffer to null
 	{
 		memset(des, input, amount);
 	}

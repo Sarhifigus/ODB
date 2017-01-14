@@ -18,46 +18,44 @@
 #include <iostream>
 namespace CipherLinker// daat is pre padded, leaves with padding, must go throug removePadding, this does not asccount for CBC mode
 {
-	int blocksize  = 8;
-	void OperateOnBlock(unsigned char* data, int length)
-	{
-		for(int n = 0; n<(length/blocksize); n++)
-		{
-			unsigned char* block = new unsigned char[blocksize];
-			Buffer::getData(block, data, (n*blocksize), blocksize);
-			//new header file
-			//;
-			Buffer::putData(data, (n*blocksize), block, blocksize);
-		}
-	}
+	 int blocksize  = 8;
+    
+     
+    
+    void OperateOnBlock(unsigned char* data,unsigned char* key,  int length)
+    {
+       
+        for(int n = 0; n<(length/blocksize); n++)
+        {
+      
+        unsigned char* block = new unsigned char[blocksize];
+        Buffer::getData(block,data,(n*blocksize), blocksize);
+        //operation goes here, from cipher or BlockOperators
 
-	void E(unsigned char* data, unsigned char* key, int length)
-	{
-		//std::cout<<length<<" "<<blocksize;
-		for(int n = 0; n<(length/blocksize); n++)
-		{
-		 std::cout<<"working";
-			unsigned char* block = new unsigned char[blocksize];
-			Buffer::getData(block, data, (n*blocksize), blocksize);
-			// Cipher::EncryptBlock(block)
-			R1::R1(block,key);// sort this shit out
-			//;
-			Buffer::putData(data, (n*blocksize), block, blocksize);
-			delete[] block;
-		}
-	}
+       
+        Buffer::putData(data, (n*blocksize), block, blocksize);
+        delete[] block;
 
-	void D(unsigned char* data, int length) //Could these not have real names so people actually know what they do
-	{
-		for(int n = 0; n<(length/blocksize); n++)
-		{
-		unsigned char* block = new unsigned char[blocksize];
-		Buffer::getData(block,data,(n*blocksize), blocksize);
-	 // Cipher::DecryptBlock(block)
-	 //;
-		Buffer::putData(data, (n*blocksize), block, blocksize);
-		}
-	}
+        }
+        
+        
+        
+        
+    }
+    
+    void ReverseOperateOnBlock(unsigned char* data, int length)
+    {
+        for(int n = 0; n<(length/blocksize); n++)
+        {
+        unsigned char* block = new unsigned char[blocksize];
+        Buffer::getData(block,data,(n*blocksize), blocksize);
+       // reverse of operation, mainly for cipher
+  
+        Buffer::putData(data, (n*blocksize), block, blocksize);
+        }
+    }
+    
+    
 }
 
 

@@ -29,7 +29,7 @@ namespace Pad
 		{
 		 p = blocksize-len;
 		}
-		else if(len%blocksize==0)
+		else if(len%blocksize==0)// padding is always added
 		{
 			p = blocksize;
 		}
@@ -59,7 +59,7 @@ namespace Pad
 		return p;
 	}
 
-	void padBuffer(unsigned char *data, int padsize, int length)//length is not actual size, just non null bytes
+	void padBuffer(unsigned char *data, int padsize, int length)// each padded byte has value of amount of padding required, known as PKCS7, cryptosecure depending on blocksize
 	{
 		unsigned char c = padsize;
 		Buffer::insertByte(data,c,length,padsize );
@@ -71,7 +71,7 @@ namespace Pad
 		return length-padsize;
 	}
 
-	unsigned char* removePadding(unsigned char *data, int length)// length will be a binary number as output is padded
+	unsigned char* removePadding(unsigned char *data, int length)
 	{
 		int padsize = data[length-1];
 
@@ -80,7 +80,7 @@ namespace Pad
 		return rem;
 	}
 
-	void padBuffer(unsigned char *data, unsigned char *padding, int padsize, int length)
+	void padBuffer(unsigned char *data, unsigned char *padding, int padsize, int length)// padding is added from other buffer, secure for any blocklength
 	{
 		unsigned char c = padsize;
 		//Buffer::putData(ch
