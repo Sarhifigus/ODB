@@ -61,18 +61,22 @@ namespace BlockOperator
     //pixels must be of length bytes * 8
 	//pixels is image data, bytes are data to be hidden
     //this uses functions above(storeByteInPixel) to insert many bytes of data into image
-    void storeDataInPixels(unsigned char* pixels, unsigned char* bytes, int length)//length is of data to store(bytes))
+    void storeDataInPixels(unsigned char* pixels,int index, unsigned char* bytes, int length)//length is of data to store(bytes))
     {
         int blocksize = 8;
         for(int n = 0; n<length; n++)
         {
        
         unsigned char* block = new unsigned char[blocksize];// goes throuhg image data 8 bytes at a time and inserts 1 byte of data(bytes)
-        Buffer::getData(block,pixels,(n*blocksize), blocksize);
+        Buffer::getData(block,pixels,index+(n*blocksize), blocksize);
+  
         
         storeByteInPixel(block,bytes[n]);
     
-        Buffer::putData(pixels, (n*blocksize), block, blocksize);
+        Buffer::putData(pixels, index+(n*blocksize), block, blocksize);
+        
+        delete[] block;
+       
         
             
             
@@ -83,18 +87,20 @@ namespace BlockOperator
         
     }
     //reverse of above function
-    void getDataInPixels(unsigned char* pixels, unsigned char* bytes, int length)//length is of data to store(bytes))
+    void getDataInPixels(unsigned char* pixels,int index, unsigned char* bytes, int length)//length is of data to store(bytes))
     {
         int blocksize = 8;
         for(int n = 0; n<length; n++)
         {
        
         unsigned char* block = new unsigned char[blocksize];
-        Buffer::getData(block,pixels,(n*blocksize), blocksize);
+        Buffer::getData(block,pixels,index+(n*blocksize), blocksize);
         
         bytes[n] = retrieveByteInPixel(block, bytes[n]);
     
-        Buffer::putData(pixels, (n*blocksize), block, blocksize);
+        Buffer::putData(pixels, index+(n*blocksize), block, blocksize);
+        
+        delete[] block;
         
             
             

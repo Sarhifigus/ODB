@@ -15,12 +15,12 @@
 #define BUFFER_H
 namespace Buffer
 {
-	void getData(unsigned char *des, unsigned char *loc, int index, int amount)
+	void getData(void *des, void *loc, int index, int amount)
 	// the small char aray, loc is large one, index is point to take data from large, int is amount(block size)
 	{
 		memcpy(des, loc + index, amount);
 	}
-	void putData(unsigned char *des, int index, unsigned char *loc, int amount)
+	void putData(void *des, int index, void *loc, int amount)
 	//des is large array. index is index of large array, oc is smaller array, int amout lis size opf small array(block size))
 	{
 		memcpy(des + index, loc, amount);
