@@ -67,34 +67,11 @@ public:
     }
     void rewrite()
     {
-        Filer::writeFile(filename, pixels, this->fileSize());
-        
-        
-        
-        
+        Filer::writeFile(filename, pixels, this->fileSize());       
     }
     //this needs to be built upon for when a bitmap is created from data
     
-    
-    
-    
-    
 private:
-
-  
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 };
 
 #endif /* BITMAPOPERATIONS_H */
-
